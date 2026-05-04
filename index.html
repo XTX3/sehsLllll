@@ -1,1 +1,1138 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>متجري</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#c8a96e;--dark:#0d0d0d;--card:#161616;--card2:#1e1e1e;
+  --text:#f0ece4;--muted:#8a8070;--accent:#e8c97a;
+  --danger:#e05555;--success:#4caf7d;--radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Tajawal',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ═══════════════════════ SPLASH ═══════════════════════ */
+#splash{position:fixed;inset:0;background:radial-gradient(ellipse at center,#1a1508 0%,#0d0d0d 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 1s ease,visibility 1s ease;}
+#splash.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.spinner-wrap{position:relative;width:130px;height:130px;}
+.spinner-ring{position:absolute;inset:0;border-radius:50%;border:3px solid transparent;}
+.sr1{border-top-color:var(--gold);animation:spin 1.1s linear infinite;}
+.sr2{border-right-color:var(--accent);animation:spin 1.7s linear infinite reverse;inset:12px;}
+.sr3{border-bottom-color:#7a6030;animation:spin 2.3s linear infinite;inset:24px;}
+.sr4{border-left-color:rgba(200,169,110,.3);animation:spin 3s linear infinite reverse;inset:36px;}
+.spinner-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:var(--gold);border-radius:50%;box-shadow:0 0 30px var(--gold),0 0 60px rgba(200,169,110,.4);}
+@keyframes spin{to{transform:rotate(360deg);}}
+.splash-brand{margin-top:32px;font-size:1.6rem;font-weight:900;color:var(--gold);letter-spacing:3px;text-shadow:0 0 20px rgba(200,169,110,.4);}
+.splash-sub{margin-top:8px;font-size:.85rem;color:var(--muted);letter-spacing:1px;}
+
+/* ═══════════════════════ SHIMMER GLOW ═══════════════════════ */
+/* الضوء يتوهج من اليمين → اليسار → اليمين بشكل متكرر */
+@keyframes glowSweep{
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+.img-shimmer{
+  border-radius:10px;
+  background: linear-gradient(
+    105deg,
+    #1e1e1e 0%,
+    #1e1e1e 30%,
+    rgba(200,169,110,.55) 48%,
+    rgba(232,201,122,.7) 50%,
+    rgba(200,169,110,.55) 52%,
+    #1e1e1e 70%,
+    #1e1e1e 100%
+  );
+  background-size: 300% 100%;
+  animation: glowSweep 1.6s ease-in-out infinite alternate;
+}
+/* دائري للأفاتار */
+.avatar-shimmer{
+  width:115px;height:115px;border-radius:50%;
+  border:3px solid rgba(200,169,110,.2);
+  background: linear-gradient(
+    105deg,
+    #1e1e1e 0%,#1e1e1e 30%,
+    rgba(200,169,110,.55) 48%,rgba(232,201,122,.7) 50%,rgba(200,169,110,.55) 52%,
+    #1e1e1e 70%,#1e1e1e 100%
+  );
+  background-size:300% 100%;
+  animation: glowSweep 1.6s ease-in-out infinite alternate;
+}
+
+/* ═══════════════════════ APP ═══════════════════════ */
+#app{display:none;flex-direction:column;min-height:100vh;}
+#app.visible{display:flex;}
+
+/* NAV */
+nav{background:rgba(13,13,13,.97);backdrop-filter:blur(16px);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(200,169,110,.12);}
+.nav-logo{font-size:1.25rem;font-weight:900;color:var(--gold);}
+.nav-actions{display:flex;gap:10px;align-items:center;}
+.icon-btn{background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.15);color:var(--gold);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;position:relative;font-size:1rem;}
+.icon-btn:hover{background:rgba(200,169,110,.18);border-color:var(--gold);}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:.6rem;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;font-weight:700;}
+
+/* MAIN */
+main{flex:1;padding:20px 16px 120px;}
+@media(min-width:640px){main{padding:28px 40px 120px;}}
+@media(min-width:1024px){main{max-width:900px;margin:0 auto;}}
+
+/* PROFILE HEADER */
+.profile-header{display:flex;flex-direction:column;align-items:center;padding:28px 0 18px;}
+.avatar-wrap{position:relative;width:115px;height:115px;}
+.avatar-img{width:115px;height:115px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);display:block;box-shadow:0 0 24px rgba(200,169,110,.3);opacity:0;transition:opacity .7s ease;}
+.avatar-img.loaded{opacity:1;}
+.avatar-ph{width:115px;height:115px;border-radius:50%;background:var(--card2);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2.6rem;color:var(--muted);}
+.avatar-edit-btn{position:absolute;bottom:4px;right:4px;background:var(--gold);color:var(--dark);width:30px;height:30px;border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:.75rem;box-shadow:0 2px 8px rgba(0,0,0,.4);}
+.store-name{margin-top:14px;font-size:1.5rem;font-weight:900;color:var(--gold);}
+
+/* SECTIONS */
+.sections-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px;margin-top:20px;}
+.section-card{background:var(--card);border:1px solid rgba(200,169,110,.12);border-radius:var(--radius);padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:.25s;user-select:none;}
+.section-card:hover{border-color:var(--gold);background:var(--card2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.section-thumb-wrap{position:relative;width:52px;height:52px;}
+.section-thumb{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,169,110,.3);opacity:0;transition:opacity .6s ease;position:absolute;inset:0;}
+.section-thumb.loaded{opacity:1;}
+.section-thumb-shim{width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(105deg,#1e1e1e 0%,#1e1e1e 30%,rgba(200,169,110,.55) 48%,rgba(232,201,122,.7) 50%,rgba(200,169,110,.55) 52%,#1e1e1e 70%,#1e1e1e 100%);
+  background-size:300% 100%;animation:glowSweep 1.6s ease-in-out infinite alternate;
+  border:2px solid rgba(200,169,110,.15);}
+.section-thumb-ph{width:52px;height:52px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:2px solid rgba(200,169,110,.15);}
+.section-name{font-size:.9rem;font-weight:700;text-align:center;}
+.add-section-card{background:transparent;border:2px dashed rgba(200,169,110,.25);color:var(--muted);}
+.add-section-card:hover{border-color:var(--gold);color:var(--gold);transform:none;}
+
+/* SECTION VIEW */
+#section-view{display:none;}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.back-btn{background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.2);color:var(--gold);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;}
+.back-btn:hover{background:rgba(200,169,110,.18);}
+.section-title-big{font-size:1.25rem;font-weight:800;color:var(--gold);}
+.items-list{display:flex;flex-direction:column;gap:16px;}
+.item-card{background:var(--card);border:1px solid rgba(200,169,110,.1);border-radius:var(--radius);padding:16px;overflow:hidden;}
+
+/* ITEM IMAGE with glow shimmer */
+.item-img-wrap{position:relative;width:100%;margin-bottom:12px;border-radius:10px;overflow:hidden;}
+.item-img-shim{width:100%;height:200px;border-radius:10px;}
+.item-img-real{width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:block;opacity:0;transition:opacity .8s ease;position:absolute;inset:0;height:100%;}
+.item-img-real.loaded{opacity:1;position:relative;}
+
+.item-title{font-weight:800;font-size:1.05rem;margin-bottom:4px;}
+.item-desc{color:var(--muted);font-size:.9rem;line-height:1.6;}
+.item-price{color:var(--gold);font-weight:700;margin-top:8px;font-size:1rem;}
+.order-btn{margin-top:12px;width:100%;background:linear-gradient(135deg,var(--gold),var(--accent));color:var(--dark);border:none;padding:12px;border-radius:10px;font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;transition:.2s;}
+.order-btn:hover{opacity:.9;transform:translateY(-1px);}
+.add-item-btn{width:100%;background:transparent;border:2px dashed rgba(200,169,110,.25);color:var(--muted);padding:16px;border-radius:var(--radius);font-family:inherit;font-size:.95rem;cursor:pointer;transition:.2s;margin-top:8px;display:none;}
+.add-item-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* MODALS */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:500;display:none;align-items:flex-end;justify-content:center;}
+.modal-bg.open{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.modal{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:520px;padding:28px 20px 50px;max-height:90vh;overflow-y:auto;position:relative;animation:slideUp .3s ease;}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal h3{font-size:1.2rem;font-weight:800;color:var(--gold);margin-bottom:20px;text-align:center;}
+.modal-close{position:absolute;top:16px;left:16px;background:rgba(200,169,110,.1);border:1px solid rgba(200,169,110,.2);color:var(--muted);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;}
+.form-group{margin-bottom:16px;}
+label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:7px;font-weight:500;}
+input,select,textarea{width:100%;background:var(--card2);border:1px solid rgba(200,169,110,.15);border-radius:11px;padding:12px 14px;color:var(--text);font-family:inherit;font-size:.95rem;outline:none;transition:.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);background:#222;}
+select option{background:var(--card2);}
+textarea{resize:vertical;min-height:85px;}
+.btn-gold{width:100%;background:linear-gradient(135deg,var(--gold),var(--accent));color:var(--dark);border:none;padding:14px;border-radius:12px;font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer;margin-top:10px;}
+.btn-gold:hover{opacity:.9;}
+.btn-outline{width:100%;background:transparent;border:1px solid rgba(200,169,110,.2);color:var(--muted);padding:12px;border-radius:12px;font-family:inherit;font-size:.95rem;cursor:pointer;margin-top:10px;transition:.2s;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-danger-outline{border-color:rgba(224,85,85,.35);color:var(--danger);}
+.image-preview{width:100%;max-height:150px;object-fit:cover;border-radius:10px;margin-top:10px;display:none;border:1px solid rgba(200,169,110,.2);}
+.phone-row{display:flex;gap:8px;}
+.phone-code{width:95px;flex-shrink:0;}
+.divider{text-align:center;color:rgba(200,169,110,.25);margin:14px 0;font-size:.8rem;letter-spacing:2px;}
+
+/* PAYMENT */
+.payment-options{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.pay-option{display:flex;align-items:center;gap:14px;background:var(--card2);border:2px solid rgba(200,169,110,.12);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.2s;}
+.pay-option.selected{border-color:var(--gold);background:rgba(200,169,110,.06);}
+.pay-option:hover{border-color:rgba(200,169,110,.4);}
+.pay-icon{font-size:1.4rem;}
+.pay-label{font-weight:600;}
+
+/* NOTIF PANEL */
+.notif-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:none;}
+.notif-overlay.open{display:block;}
+.notif-panel{position:fixed;top:0;right:0;width:min(360px,96%);height:100%;background:var(--card);z-index:401;overflow-y:auto;box-shadow:-6px 0 32px rgba(0,0,0,.6);transform:translateX(100%);transition:transform .3s ease;padding:0 0 40px;}
+.notif-panel.open{transform:translateX(0);}
+.notif-panel-head{background:var(--card2);padding:18px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(200,169,110,.1);position:sticky;top:0;z-index:1;}
+.notif-panel-head h3{color:var(--gold);font-size:1.1rem;font-weight:800;}
+.notif-close-btn{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;}
+
+/* NOTIF TABS */
+.notif-tabs{display:flex;gap:0;border-bottom:1px solid rgba(200,169,110,.1);}
+.ntab{flex:1;padding:12px;text-align:center;font-size:.85rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;}
+.ntab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.notif-tab-content{display:none;padding:14px;}
+.notif-tab-content.active{display:block;}
+
+/* ORDER NOTIF CARD */
+.order-card{background:var(--card2);border-radius:12px;padding:14px;margin-bottom:12px;border-right:3px solid rgba(200,169,110,.3);}
+.order-card.pending{border-right-color:var(--gold);}
+.order-card.accepted{border-right-color:var(--success);}
+.order-card.rejected{border-right-color:var(--danger);}
+.oc-name{font-weight:700;font-size:.95rem;margin-bottom:3px;}
+.oc-info{color:var(--muted);font-size:.82rem;margin-bottom:2px;}
+.oc-status{font-size:.8rem;font-weight:700;margin-top:6px;}
+.oc-actions{display:flex;gap:8px;margin-top:10px;}
+.btn-accept{background:var(--success);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.85rem;}
+.btn-reject{background:var(--danger);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.85rem;}
+
+/* SUPPORT CHAT LIST */
+.chat-list{display:flex;flex-direction:column;gap:10px;}
+.chat-person-card{background:var(--card2);border-radius:12px;padding:13px 14px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(200,169,110,.08);}
+.chat-person-card:hover{border-color:var(--gold);}
+.chat-person-info{}
+.chat-person-name{font-weight:700;font-size:.95rem;}
+.chat-person-phone{color:var(--muted);font-size:.8rem;margin-top:2px;}
+.chat-unread{background:var(--gold);color:var(--dark);min-width:22px;height:22px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;padding:0 5px;}
+
+/* CHAT VIEW */
+#chat-view{display:none;height:100%;flex-direction:column;}
+.chat-view-head{background:var(--card2);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(200,169,110,.1);}
+.chat-back{background:none;border:none;color:var(--gold);font-size:1.1rem;cursor:pointer;}
+.chat-view-name{font-weight:800;font-size:.95rem;}
+.chat-view-phone{font-size:.78rem;color:var(--muted);}
+.chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0;max-height:calc(100vh - 200px);}
+.msg-bubble{max-width:80%;padding:10px 14px;border-radius:14px;font-size:.9rem;line-height:1.5;}
+.msg-user{background:var(--card);border-radius:14px 14px 4px 14px;align-self:flex-start;}
+.msg-admin{background:rgba(200,169,110,.15);border:1px solid rgba(200,169,110,.2);border-radius:14px 14px 14px 4px;align-self:flex-end;color:var(--gold);}
+.msg-time{font-size:.7rem;color:var(--muted);margin-top:3px;}
+.chat-input-row{padding:12px;display:flex;gap:8px;border-top:1px solid rgba(200,169,110,.1);}
+.chat-input{flex:1;background:var(--card2);border:1px solid rgba(200,169,110,.15);border-radius:10px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:.9rem;outline:none;}
+.chat-input:focus{border-color:var(--gold);}
+.chat-send{background:var(--gold);color:var(--dark);border:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;flex-shrink:0;}
+
+/* ADMIN LOGIN */
+#admin-login-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:800;align-items:center;justify-content:center;padding:20px;}
+#admin-login-overlay.open{display:flex;}
+.login-box{background:var(--card);border-radius:24px;padding:36px 24px;width:100%;max-width:380px;border:1px solid rgba(200,169,110,.15);}
+.login-box h2{text-align:center;color:var(--gold);margin-bottom:6px;font-size:1.45rem;font-weight:900;}
+.login-sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:24px;}
+
+/* USER AUTH MODAL */
+#user-auth-modal .modal{border-radius:24px 24px 0 0;}
+.auth-tabs{display:flex;gap:0;margin-bottom:20px;border-radius:10px;overflow:hidden;border:1px solid rgba(200,169,110,.2);}
+.auth-tab{flex:1;padding:11px;text-align:center;font-weight:700;font-size:.9rem;cursor:pointer;color:var(--muted);background:var(--card2);transition:.2s;}
+.auth-tab.active{background:var(--gold);color:var(--dark);}
+
+/* FAB SUPPORT */
+.fab-support{position:fixed;bottom:28px;left:20px;background:linear-gradient(135deg,#2d7d57,var(--success));color:#fff;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;box-shadow:0 6px 20px rgba(76,175,125,.45);z-index:300;transition:.2s;}
+.fab-support:hover{transform:scale(1.08);}
+
+/* TOAST */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(25,25,25,.97);border:1px solid rgba(200,169,110,.25);color:var(--text);padding:13px 26px;border-radius:50px;font-size:.9rem;opacity:0;transition:.3s;pointer-events:none;z-index:9999;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* LOADING */
+.loading-ph{text-align:center;padding:40px;color:var(--muted);}
+.spin-sm{display:inline-block;width:26px;height:26px;border:3px solid rgba(200,169,110,.15);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="spinner-wrap">
+    <div class="spinner-ring sr1"></div><div class="spinner-ring sr2"></div>
+    <div class="spinner-ring sr3"></div><div class="spinner-ring sr4"></div>
+    <div class="spinner-core"></div>
+  </div>
+  <div class="splash-brand">متجري</div>
+  <div class="splash-sub">جاري التحميل...</div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-login-overlay">
+  <div class="login-box">
+    <h2>🔐 لوحة المسؤول</h2>
+    <div class="login-sub">أدخل بيانات تسجيل الدخول</div>
+    <div class="form-group"><label>البريد الإلكتروني</label>
+      <input type="email" id="login-email" placeholder="admin@example.com"/></div>
+    <div class="form-group"><label>كلمة المرور</label>
+      <input type="password" id="login-pass" placeholder="••••••••"/></div>
+    <button class="btn-gold" onclick="doAdminLogin()">🔑 دخول</button>
+    <button class="btn-outline" onclick="closeEl('admin-login-overlay')">إلغاء</button>
+  </div>
+</div>
+
+<!-- USER AUTH MODAL (تسجيل / دخول للمستخدمين) -->
+<div class="modal-bg" id="user-auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('user-auth-modal')"><i class="fas fa-times"></i></button>
+    <h3>👤 حساب المستخدم</h3>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">تسجيل الدخول</div>
+      <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">إنشاء حساب</div>
+    </div>
+    <!-- Login -->
+    <div id="auth-login-form">
+      <div class="form-group"><label>البريد الإلكتروني</label>
+        <input type="email" id="u-login-email" placeholder="example@mail.com"/></div>
+      <div class="form-group"><label>كلمة المرور</label>
+        <input type="password" id="u-login-pass" placeholder="••••••••"/></div>
+      <button class="btn-gold" onclick="doUserLogin()">🔑 دخول</button>
+    </div>
+    <!-- Register -->
+    <div id="auth-register-form" style="display:none;">
+      <div class="form-group"><label>الاسم الكامل</label>
+        <input id="u-reg-name" placeholder="اسمك الكامل"/></div>
+      <div class="form-group"><label>رقم الهاتف</label>
+        <div class="phone-row">
+          <select id="u-reg-code" class="phone-code">
+            <option value="+963">🇸🇾 +963</option><option value="+966">🇸🇦 +966</option>
+            <option value="+971">🇦🇪 +971</option><option value="+962">🇯🇴 +962</option>
+            <option value="+961">🇱🇧 +961</option><option value="+964">🇮🇶 +964</option>
+            <option value="+20">🇪🇬 +20</option><option value="+212">🇲🇦 +212</option>
+            <option value="+90">🇹🇷 +90</option><option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+          </select>
+          <input id="u-reg-phone" type="tel" placeholder="رقم الهاتف" style="flex:1"/>
+        </div>
+      </div>
+      <div class="form-group"><label>البريد الإلكتروني</label>
+        <input type="email" id="u-reg-email" placeholder="example@mail.com"/></div>
+      <div class="form-group"><label>كلمة المرور</label>
+        <input type="password" id="u-reg-pass" placeholder="6 أحرف على الأقل"/></div>
+      <button class="btn-gold" onclick="doUserRegister()">✅ إنشاء الحساب</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo" id="store-name-nav">متجري</div>
+    <div class="nav-actions">
+      <div class="icon-btn" onclick="openNotifPanel()" title="الإشعارات">
+        <i class="fas fa-bell"></i>
+        <div class="notif-badge" id="notif-badge"></div>
+      </div>
+      <div class="icon-btn" id="user-nav-btn" onclick="handleUserBtn()" title="حسابي">
+        <i class="fas fa-user" id="user-nav-icon"></i>
+      </div>
+      <div class="icon-btn" id="admin-nav-btn" onclick="handleAdminBtn()" title="المسؤول" style="display:none;">
+        <i class="fas fa-cog"></i>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HOME -->
+    <div id="home-view">
+      <div class="profile-header">
+        <div class="avatar-wrap" id="avatar-wrap">
+          <div class="avatar-shimmer" id="avatar-shim"></div>
+        </div>
+        <div class="store-name" id="store-name-display">متجري</div>
+      </div>
+      <div class="sections-grid" id="sections-grid">
+        <div class="section-card add-section-card" id="add-section-btn" onclick="openAddSection()" style="display:none;">
+          <div style="font-size:2rem;">＋</div>
+          <div class="section-name">قسم جديد</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION VIEW -->
+    <div id="section-view">
+      <div class="section-header">
+        <button class="back-btn" onclick="backToHome()"><i class="fas fa-arrow-right"></i></button>
+        <div class="section-title-big" id="section-title-big"></div>
+      </div>
+      <div class="items-list" id="items-list">
+        <div class="loading-ph"><div class="spin-sm"></div><br/>جاري التحميل...</div>
+      </div>
+      <button class="add-item-btn" id="add-item-btn" onclick="openAddItem()">＋ إضافة منتج / محتوى</button>
+    </div>
+  </main>
+
+  <!-- SUPPORT FAB -->
+  <div class="fab-support" onclick="openUserSupport()" title="الدعم الفني">
+    <i class="fas fa-headset"></i>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- NOTIF OVERLAY + PANEL -->
+<div class="notif-overlay" id="notif-overlay" onclick="closeNotifPanel()"></div>
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-panel-head">
+    <h3>🔔 الإشعارات</h3>
+    <button class="notif-close-btn" onclick="closeNotifPanel()"><i class="fas fa-times"></i></button>
+  </div>
+  <!-- tabs: orders / support -->
+  <div class="notif-tabs" id="notif-tabs" style="display:none;">
+    <div class="ntab active" id="ntab-orders" onclick="switchNotifTab('orders')">الطلبات</div>
+    <div class="ntab" id="ntab-support" onclick="switchNotifTab('support')">الدعم الفني</div>
+  </div>
+  <!-- ORDERS TAB -->
+  <div class="notif-tab-content active" id="ntab-orders-content">
+    <div id="orders-list"><div class="loading-ph">لا توجد طلبات</div></div>
+  </div>
+  <!-- SUPPORT TAB (admin only) -->
+  <div class="notif-tab-content" id="ntab-support-content">
+    <!-- chat list or chat view -->
+    <div id="support-chat-list-wrap">
+      <div class="chat-list" id="support-chat-list">
+        <div class="loading-ph">لا توجد محادثات</div>
+      </div>
+    </div>
+    <div id="chat-view" style="display:none;flex-direction:column;">
+      <div class="chat-view-head">
+        <button class="chat-back" onclick="backToChatList()"><i class="fas fa-arrow-right"></i></button>
+        <div>
+          <div class="chat-view-name" id="cv-name"></div>
+          <div class="chat-view-phone" id="cv-phone"></div>
+        </div>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-reply-input" placeholder="اكتب ردك..." onkeydown="if(event.key==='Enter')sendAdminReply()"/>
+        <button class="chat-send" onclick="sendAdminReply()"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SECTION MODAL -->
+<div class="modal-bg" id="add-section-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('add-section-modal')"><i class="fas fa-times"></i></button>
+    <h3>➕ إضافة قسم</h3>
+    <div class="form-group"><label>اسم القسم</label>
+      <input id="sec-name" placeholder="مثال: ملابس، إلكترونيات..."/></div>
+    <div class="form-group"><label>🔗 رابط صورة القسم (URL فقط)</label>
+      <input type="url" id="sec-img-url" placeholder="https://example.com/photo.jpg" oninput="previewUrl(this.value,'sec-img-prev')"/>
+      <img id="sec-img-prev" class="image-preview"/></div>
+    <button class="btn-gold" onclick="saveSection()">💾 حفظ القسم</button>
+    <button class="btn-outline" onclick="closeModal('add-section-modal')">إلغاء</button>
+  </div>
+</div>
+
+<!-- ADD ITEM MODAL -->
+<div class="modal-bg" id="add-item-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('add-item-modal')"><i class="fas fa-times"></i></button>
+    <h3>➕ إضافة محتوى</h3>
+    <div class="form-group"><label>النوع</label>
+      <select id="item-type" onchange="toggleItemFields()">
+        <option value="product">📦 منتج للبيع</option>
+        <option value="text">📝 نص عادي</option>
+        <option value="image">🖼️ صورة فقط</option>
+        <option value="order">🛒 طلب للأعضاء</option>
+      </select></div>
+    <div id="f-title" class="form-group"><label>العنوان</label>
+      <input id="item-title" placeholder="اسم المنتج أو العنوان..."/></div>
+    <div id="f-desc" class="form-group"><label>الوصف</label>
+      <textarea id="item-desc" placeholder="اكتب وصفاً هنا..."></textarea></div>
+    <div id="f-price" class="form-group"><label>السعر (ل.س)</label>
+      <input id="item-price" type="number" placeholder="0"/></div>
+    <div id="f-img" class="form-group"><label>🔗 رابط الصورة (URL فقط)</label>
+      <input type="url" id="item-img-url" placeholder="https://example.com/photo.jpg" oninput="previewUrl(this.value,'item-img-prev')"/>
+      <img id="item-img-prev" class="image-preview"/></div>
+    <button class="btn-gold" onclick="saveItem()">💾 حفظ</button>
+    <button class="btn-outline" onclick="closeModal('add-item-modal')">إلغاء</button>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-bg" id="order-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('order-modal')"><i class="fas fa-times"></i></button>
+    <h3>🛒 تقديم طلب</h3>
+    <div id="order-item-info" style="background:var(--card2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:.9rem;color:var(--muted);"></div>
+    <div class="form-group"><label>الاسم الكامل</label>
+      <input id="ord-name" placeholder="اسمك الكامل"/></div>
+    <div class="form-group"><label>رقم الهاتف</label>
+      <div class="phone-row">
+        <select id="ord-code" class="phone-code">
+          <option value="+963">🇸🇾 +963</option><option value="+966">🇸🇦 +966</option>
+          <option value="+971">🇦🇪 +971</option><option value="+962">🇯🇴 +962</option>
+          <option value="+961">🇱🇧 +961</option><option value="+964">🇮🇶 +964</option>
+          <option value="+20">🇪🇬 +20</option><option value="+212">🇲🇦 +212</option>
+          <option value="+90">🇹🇷 +90</option><option value="+1">🇺🇸 +1</option>
+          <option value="+44">🇬🇧 +44</option>
+        </select>
+        <input id="ord-phone" type="tel" placeholder="رقم الهاتف" style="flex:1"/>
+      </div></div>
+    <div class="form-group"><label>ملاحظات</label>
+      <textarea id="ord-note" placeholder="اللون، الحجم، أي تفاصيل..."></textarea></div>
+    <div class="form-group"><label>طريقة الدفع</label>
+      <div class="payment-options">
+        <div class="pay-option selected" data-val="شام كاش" onclick="selectPay(this)">
+          <span class="pay-icon">💳</span><span class="pay-label">شام كاش</span></div>
+        <div class="pay-option" data-val="حوالة بنكية" onclick="selectPay(this)">
+          <span class="pay-icon">🏦</span><span class="pay-label">حوالة بنكية</span></div>
+        <div class="pay-option" data-val="تسليم كاش" onclick="selectPay(this)">
+          <span class="pay-icon">💵</span><span class="pay-label">تسليم كاش</span></div>
+      </div></div>
+    <button class="btn-gold" onclick="submitOrder()">📤 إرسال الطلب</button>
+    <button class="btn-outline" onclick="closeModal('order-modal')">إلغاء</button>
+  </div>
+</div>
+
+<!-- STORE SETTINGS MODAL (admin) -->
+<div class="modal-bg" id="profile-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('profile-modal')"><i class="fas fa-times"></i></button>
+    <h3>⚙️ إعدادات المتجر</h3>
+    <div class="form-group"><label>اسم المتجر</label>
+      <input id="store-name-input" placeholder="اسم متجرك..."/></div>
+    <div class="form-group"><label>🔗 رابط صورة المتجر (URL فقط)</label>
+      <input type="url" id="profile-img-url" placeholder="https://example.com/photo.jpg" oninput="previewUrl(this.value,'profile-img-prev')"/>
+      <img id="profile-img-prev" class="image-preview"/></div>
+    <button class="btn-gold" onclick="saveProfile()">💾 حفظ</button>
+    <div class="divider">─────────────</div>
+    <button class="btn-outline btn-danger-outline" onclick="doAdminLogout()">🚪 تسجيل الخروج</button>
+    <button class="btn-outline" onclick="closeModal('profile-modal')">إغلاق</button>
+  </div>
+</div>
+
+<!-- USER SUPPORT MODAL -->
+<div class="modal-bg" id="support-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('support-modal')"><i class="fas fa-times"></i></button>
+    <h3>💬 الدعم الفني</h3>
+    <!-- غير مسجل -->
+    <div id="support-guest-form">
+      <div style="text-align:center;padding:10px 0 20px;">
+        <div style="font-size:3rem;margin-bottom:12px;">💬</div>
+        <p style="color:var(--muted);font-size:.95rem;margin-bottom:20px;">سجّل دخولك أو أنشئ حساباً للتواصل مع الدعم الفني</p>
+        <button class="btn-gold" onclick="closeModal('support-modal');openModal('user-auth-modal')">👤 تسجيل الدخول / إنشاء حساب</button>
+      </div>
+    </div>
+    <!-- مسجل — محادثة مباشرة -->
+    <div id="support-chat-area" style="display:none;">
+      <div class="chat-messages" id="user-chat-messages" style="max-height:320px;margin-bottom:12px;border:1px solid rgba(200,169,110,.1);border-radius:12px;padding:10px;"></div>
+      <div style="display:flex;gap:8px;">
+        <input class="chat-input" id="user-chat-input" placeholder="اكتب رسالتك للدعم الفني..." onkeydown="if(event.key==='Enter')sendUserMsg()"/>
+        <button class="chat-send" onclick="sendUserMsg()"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut, onAuthStateChanged, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import {
+  getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs,
+  onSnapshot, updateDoc, serverTimestamp, query, orderBy, where
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const cfg = {
+  apiKey:"AIzaSyBJWHFRHtNiclz7F7xHca1gw4EyeB1Ivbc",
+  authDomain:"ana1-3c290.firebaseapp.com",
+  projectId:"ana1-3c290",
+  messagingSenderId:"782047365383",
+  appId:"1:782047365383:web:f6bf22b10c06d0437d1da2"
+};
+const ADMIN_EMAIL = 'uusu.06@gmail.com';
+
+const fbApp = initializeApp(cfg);
+const auth  = getAuth(fbApp);
+const db    = getFirestore(fbApp);
+
+// ── STATE ──
+let isAdmin = false;
+let currentUser = null;
+let curSection  = null;
+let curOrderItem= null;
+let selPayment  = 'شام كاش';
+let unsubOrders = null;
+let unsubSupport= null;
+let activeChatId= null;
+let unsubChat   = null;
+let unsubUserChat=null;
+let currentNotifTab = 'orders';
+
+// ── INIT ──
+async function initApp(){
+  await Promise.all([ loadProfile(), loadSections() ]);
+  document.getElementById('splash').classList.add('hide');
+  document.getElementById('app').classList.add('visible');
+}
+initApp();
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+  isAdmin = user && user.email === ADMIN_EMAIL;
+
+  // admin controls
+  document.getElementById('add-section-btn').style.display = isAdmin ? 'flex':'none';
+  document.getElementById('add-item-btn').style.display    = isAdmin ? 'block':'none';
+  document.getElementById('admin-nav-btn').style.display   = isAdmin ? 'flex':'none';
+  document.getElementById('user-nav-icon').className       = user ? 'fas fa-user-check':'fas fa-user';
+
+  if(isAdmin){
+    document.getElementById('notif-tabs').style.display = 'flex';
+    listenOrders();
+    listenSupportList();
+  } else {
+    document.getElementById('notif-tabs').style.display = 'none';
+    if(unsubOrders){ unsubOrders(); unsubOrders=null; }
+    if(unsubSupport){ unsubSupport(); unsubSupport=null; }
+  }
+  // avatar edit btn
+  const eb = document.getElementById('av-edit');
+  if(eb) eb.style.display = isAdmin ? 'flex':'none';
+
+  // if user logged in, show their chat
+  if(user && !isAdmin) openUserSupportChat();
+});
+
+// ── PROFILE ──
+async function loadProfile(){
+  try{
+    const snap = await getDoc(doc(db,'settings','profile'));
+    if(snap.exists()){
+      const d = snap.data();
+      renderAvatar(d.photoURL||null);
+      if(d.name){
+        document.getElementById('store-name-nav').textContent = d.name;
+        document.getElementById('store-name-display').textContent = d.name;
+      }
+    } else renderAvatar(null);
+  }catch(e){ renderAvatar(null); }
+}
+
+function renderAvatar(url){
+  const wrap = document.getElementById('avatar-wrap');
+  wrap.innerHTML='';
+  const shim = document.createElement('div');
+  shim.className='avatar-shimmer';
+  wrap.appendChild(shim);
+  if(url){
+    const img = document.createElement('img');
+    img.className='avatar-img';
+    img.alt='المتجر';
+    img.onload = ()=>{ shim.remove(); img.classList.add('loaded'); };
+    img.onerror = ()=>{ shim.remove(); renderAvatarPH(wrap); };
+    img.src = url;
+    wrap.insertBefore(img, shim);
+  } else { shim.remove(); renderAvatarPH(wrap); }
+  const eb = document.createElement('div');
+  eb.className='avatar-edit-btn'; eb.id='av-edit';
+  eb.innerHTML='<i class="fas fa-camera"></i>';
+  eb.style.display = isAdmin ? 'flex':'none';
+  eb.onclick = ()=>openModal('profile-modal');
+  wrap.appendChild(eb);
+}
+function renderAvatarPH(wrap){
+  const ph=document.createElement('div'); ph.className='avatar-ph';
+  ph.innerHTML='<i class="fas fa-store"></i>';
+  wrap.insertBefore(ph, wrap.firstChild);
+}
+
+window.saveProfile = async()=>{
+  const name   = document.getElementById('store-name-input').value.trim();
+  const imgUrl = document.getElementById('profile-img-url').value.trim();
+  const data   = {};
+  if(name) data.name = name;
+  if(imgUrl) data.photoURL = imgUrl;
+  if(!Object.keys(data).length){ showToast('لا توجد تغييرات'); return; }
+  await setDoc(doc(db,'settings','profile'), data, {merge:true});
+  closeModal('profile-modal');
+  loadProfile();
+  if(name){ document.getElementById('store-name-nav').textContent=name; document.getElementById('store-name-display').textContent=name; }
+  showToast('✅ تم الحفظ');
+};
+
+// ── SECTIONS ──
+async function loadSections(){
+  const grid = document.getElementById('sections-grid');
+  [...grid.querySelectorAll('.dyn-sec')].forEach(e=>e.remove());
+  try{
+    const snap = await getDocs(query(collection(db,'sections'), orderBy('createdAt','asc')));
+    snap.forEach(d=>{
+      grid.insertBefore(buildSectionCard({id:d.id,...d.data()}), document.getElementById('add-section-btn'));
+    });
+  }catch(e){ console.warn(e); }
+}
+
+function buildSectionCard(sec){
+  const c = document.createElement('div');
+  c.className='section-card dyn-sec';
+  c.onclick = ()=>openSection(sec.id, sec.name);
+  let thumbHtml='';
+  if(sec.photoURL){
+    thumbHtml=`<div class="section-thumb-wrap">
+      <div class="section-thumb-shim" id="sshim-${sec.id}"></div>
+      <img class="section-thumb" src="${sec.photoURL}" alt="${sec.name}" loading="lazy"
+        onload="this.classList.add('loaded');const s=document.getElementById('sshim-${sec.id}');if(s)s.remove();"
+        onerror="const s=document.getElementById('sshim-${sec.id}');if(s){s.outerHTML='<div class=section-thumb-ph>📦</div>';}"
+      />
+    </div>`;
+  } else {
+    thumbHtml=`<div class="section-thumb-ph">📦</div>`;
+  }
+  c.innerHTML = thumbHtml + `<div class="section-name">${sec.name}</div>`;
+  return c;
+}
+
+window.openAddSection = ()=>{ if(!isAdmin){showToast('يجب تسجيل الدخول أولاً');return;} openModal('add-section-modal'); };
+
+window.saveSection = async()=>{
+  const name     = document.getElementById('sec-name').value.trim();
+  if(!name){ showToast('أدخل اسم القسم'); return; }
+  const photoURL = document.getElementById('sec-img-url').value.trim()||null;
+  await addDoc(collection(db,'sections'),{name, photoURL, createdAt:serverTimestamp()});
+  closeModal('add-section-modal');
+  document.getElementById('sec-name').value='';
+  document.getElementById('sec-img-url').value='';
+  document.getElementById('sec-img-prev').style.display='none';
+  loadSections();
+  showToast('✅ تم إضافة القسم');
+};
+
+// ── SECTION VIEW ──
+window.openSection = async(id,name)=>{
+  curSection={id,name};
+  document.getElementById('home-view').style.display='none';
+  document.getElementById('section-view').style.display='block';
+  document.getElementById('section-title-big').textContent=name;
+  document.getElementById('add-item-btn').style.display = isAdmin ? 'block':'none';
+  await loadItems(id);
+};
+window.backToHome = ()=>{
+  curSection=null;
+  document.getElementById('section-view').style.display='none';
+  document.getElementById('home-view').style.display='block';
+};
+
+async function loadItems(secId){
+  const list = document.getElementById('items-list');
+  list.innerHTML='<div class="loading-ph"><div class="spin-sm"></div><br/>جاري التحميل...</div>';
+  try{
+    const snap = await getDocs(query(collection(db,`sections/${secId}/items`), orderBy('createdAt','asc')));
+    list.innerHTML='';
+    if(snap.empty){ list.innerHTML='<div class="loading-ph">لا توجد عناصر بعد</div>'; return; }
+    snap.forEach(d=>list.appendChild(buildItemCard({id:d.id,...d.data()})));
+  }catch(e){ list.innerHTML='<div class="loading-ph">خطأ في التحميل</div>'; }
+}
+
+function buildItemCard(item){
+  const card = document.createElement('div');
+  card.className='item-card';
+  let html='';
+  if(item.photoURL){
+    const uid = 'img'+Math.random().toString(36).slice(2,8);
+    html+=`<div class="item-img-wrap">
+      <div class="item-img-shim img-shimmer" id="shim-${uid}" style="height:200px;"></div>
+      <img class="item-img-real" src="${item.photoURL}" alt="${item.title||''}" loading="lazy"
+        onload="
+          this.classList.add('loaded');
+          var s=document.getElementById('shim-${uid}');
+          if(s){s.style.opacity='0';setTimeout(()=>s.remove(),600);}
+        "
+        onerror="var s=document.getElementById('shim-${uid}');if(s)s.remove();"
+      />
+    </div>`;
+  }
+  if(item.title) html+=`<div class="item-title">${item.title}</div>`;
+  if(item.desc)  html+=`<div class="item-desc">${item.desc}</div>`;
+  if(item.price) html+=`<div class="item-price">💰 ${Number(item.price).toLocaleString()} ل.س</div>`;
+  if(item.type==='product'||item.type==='order'){
+    const enc = JSON.stringify(item).replace(/'/g,"'");
+    html+=`<button class="order-btn" onclick='window._openOrder(${enc})'>🛒 اطلب الآن</button>`;
+  }
+  card.innerHTML=html;
+  return card;
+}
+
+// ── ITEMS ──
+window.openAddItem = ()=>{ toggleItemFields(); openModal('add-item-modal'); };
+window.toggleItemFields = ()=>{
+  const t = document.getElementById('item-type').value;
+  document.getElementById('f-title').style.display = t==='image'?'none':'block';
+  document.getElementById('f-desc').style.display  = t==='image'?'none':'block';
+  document.getElementById('f-price').style.display = (t==='product'||t==='order')?'block':'none';
+  document.getElementById('f-img').style.display   = t==='text'?'none':'block';
+};
+window.saveItem = async()=>{
+  if(!curSection){ showToast('اختر قسماً أولاً'); return; }
+  const type     = document.getElementById('item-type').value;
+  const title    = document.getElementById('item-title').value.trim();
+  const desc     = document.getElementById('item-desc').value.trim();
+  const price    = document.getElementById('item-price').value.trim();
+  const photoURL = document.getElementById('item-img-url').value.trim()||null;
+  const data={type,createdAt:serverTimestamp()};
+  if(title) data.title=title; if(desc) data.desc=desc;
+  if(price) data.price=price; if(photoURL) data.photoURL=photoURL;
+  await addDoc(collection(db,`sections/${curSection.id}/items`),data);
+  closeModal('add-item-modal');
+  ['item-title','item-desc','item-price','item-img-url'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('item-img-prev').style.display='none';
+  loadItems(curSection.id);
+  showToast('✅ تم الإضافة');
+};
+
+// ── ORDER ──
+window._openOrder = item=>{
+  // user must be logged in
+  if(!currentUser){
+    showToast('يجب تسجيل الدخول أولاً لتقديم طلب');
+    setTimeout(()=>openModal('user-auth-modal'),400);
+    return;
+  }
+  curOrderItem=item;
+  const info=document.getElementById('order-item-info');
+  info.innerHTML=item.title?`📦 <strong>${item.title}</strong>${item.price?' — '+Number(item.price).toLocaleString()+' ل.س':''}` :'';
+  // prefill from user profile
+  if(currentUser.displayName) document.getElementById('ord-name').value=currentUser.displayName;
+  openModal('order-modal');
+};
+window.selectPay = el=>{
+  document.querySelectorAll('.pay-option').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected'); selPayment=el.dataset.val;
+};
+window.submitOrder = async()=>{
+  const name  = document.getElementById('ord-name').value.trim();
+  const code  = document.getElementById('ord-code').value;
+  const phone = document.getElementById('ord-phone').value.trim();
+  const note  = document.getElementById('ord-note').value.trim();
+  if(!name||!phone){ showToast('يرجى إدخال الاسم ورقم الهاتف'); return; }
+  await addDoc(collection(db,'orders'),{
+    name, phone:`${code}${phone}`, note, payment:selPayment,
+    item:curOrderItem||null, status:'pending',
+    userId: currentUser?.uid||null,
+    createdAt:serverTimestamp()
+  });
+  closeModal('order-modal');
+  ['ord-name','ord-phone','ord-note'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ تم إرسال طلبك بنجاح!');
+};
+
+// ── ORDERS LISTEN (admin) ──
+function listenOrders(){
+  if(unsubOrders) unsubOrders();
+  unsubOrders = onSnapshot(
+    query(collection(db,'orders'), orderBy('createdAt','desc')),
+    snap=>{
+      const pending = snap.docs.filter(d=>d.data().status==='pending').length;
+      const badge = document.getElementById('notif-badge');
+      badge.textContent=pending;
+      badge.style.display=pending>0?'flex':'none';
+      renderOrdersList(snap.docs);
+    }
+  );
+}
+function renderOrdersList(docs){
+  const el=document.getElementById('orders-list');
+  if(!docs.length){ el.innerHTML='<div class="loading-ph">لا توجد طلبات</div>'; return; }
+  el.innerHTML='';
+  const sm={pending:'⏳ معلق',accepted:'✅ مقبول',rejected:'❌ مرفوض'};
+  docs.forEach(d=>{
+    const data=d.data();
+    const div=document.createElement('div');
+    div.className=`order-card ${data.status||'pending'}`;
+    div.innerHTML=`
+      <div class="oc-name">👤 ${data.name}</div>
+      <div class="oc-info">📞 ${data.phone}</div>
+      <div class="oc-info">💳 ${data.payment||'—'}</div>
+      ${data.item?.title?`<div class="oc-info">📦 ${data.item.title}${data.item.price?' — '+Number(data.item.price).toLocaleString()+' ل.س':''}</div>`:''}
+      ${data.note?`<div class="oc-info">📝 ${data.note}</div>`:''}
+      <div class="oc-status">${sm[data.status]||data.status}</div>
+      ${data.status==='pending'?`<div class="oc-actions">
+        <button class="btn-accept" onclick="window._updOrder('${d.id}','accepted')">✅ قبول</button>
+        <button class="btn-reject" onclick="window._updOrder('${d.id}','rejected')">❌ رفض</button>
+      </div>`:''}`;
+    el.appendChild(div);
+  });
+}
+window._updOrder = async(id,status)=>{
+  await updateDoc(doc(db,'orders',id),{status});
+  showToast(status==='accepted'?'✅ تم القبول':'❌ تم الرفض');
+};
+
+// ── SUPPORT CHAT LIST (admin) ──
+function listenSupportList(){
+  if(unsubSupport) unsubSupport();
+  unsubSupport = onSnapshot(
+    query(collection(db,'support_chats'), orderBy('lastMsgAt','desc')),
+    snap=>{
+      renderSupportList(snap.docs);
+    }
+  );
+}
+function renderSupportList(docs){
+  const el=document.getElementById('support-chat-list');
+  if(!docs.length){ el.innerHTML='<div class="loading-ph">لا توجد محادثات</div>'; return; }
+  el.innerHTML='';
+  docs.forEach(d=>{
+    const data=d.data();
+    const card=document.createElement('div');
+    card.className='chat-person-card';
+    card.onclick=()=>openChatView(d.id, data.name, data.phone);
+    const unread = data.unreadAdmin||0;
+    card.innerHTML=`
+      <div class="chat-person-info">
+        <div class="chat-person-name">👤 ${data.name||'مجهول'}</div>
+        <div class="chat-person-phone">${data.phone||''}</div>
+      </div>
+      ${unread>0?`<div class="chat-unread">${unread}</div>`:''}`;
+    el.appendChild(card);
+  });
+}
+
+// ── CHAT VIEW (admin) ──
+function openChatView(chatId, name, phone){
+  activeChatId=chatId;
+  document.getElementById('support-chat-list-wrap').style.display='none';
+  const cv=document.getElementById('chat-view');
+  cv.style.display='flex';
+  document.getElementById('cv-name').textContent=name||'مجهول';
+  document.getElementById('cv-phone').textContent=phone||'';
+  loadChatMessages(chatId);
+  // mark as read
+  updateDoc(doc(db,'support_chats',chatId),{unreadAdmin:0}).catch(()=>{});
+}
+window.backToChatList=()=>{
+  if(unsubChat){ unsubChat(); unsubChat=null; }
+  activeChatId=null;
+  document.getElementById('chat-view').style.display='none';
+  document.getElementById('support-chat-list-wrap').style.display='block';
+};
+function loadChatMessages(chatId){
+  const el=document.getElementById('chat-messages');
+  el.innerHTML='';
+  if(unsubChat) unsubChat();
+  unsubChat=onSnapshot(
+    query(collection(db,`support_chats/${chatId}/messages`),orderBy('createdAt','asc')),
+    snap=>{
+      el.innerHTML='';
+      snap.forEach(d=>{
+        const data=d.data();
+        const div=document.createElement('div');
+        div.className=`msg-bubble ${data.role==='admin'?'msg-admin':'msg-user'}`;
+        div.innerHTML=`${data.text}<div class="msg-time">${data.role==='admin'?'المسؤول':'المستخدم'}</div>`;
+        el.appendChild(div);
+      });
+      el.scrollTop=el.scrollHeight;
+    }
+  );
+}
+window.sendAdminReply=async()=>{
+  const input=document.getElementById('chat-reply-input');
+  const text=input.value.trim();
+  if(!text||!activeChatId) return;
+  input.value='';
+  await addDoc(collection(db,`support_chats/${activeChatId}/messages`),{
+    text, role:'admin', createdAt:serverTimestamp()
+  });
+  await updateDoc(doc(db,'support_chats',activeChatId),{
+    lastMsgAt:serverTimestamp(), unreadUser:1
+  });
+};
+
+// ── USER SUPPORT ──
+window.openUserSupport=()=>{
+  // المسؤول: افتح panel الإشعارات مباشرة على تاب الدعم الفني
+  if(isAdmin){
+    switchNotifTab('support');
+    openNotifPanel();
+    return;
+  }
+  // غير مسجل: وجّهه للتسجيل
+  if(!currentUser){
+    document.getElementById('support-guest-form').style.display='block';
+    document.getElementById('support-chat-area').style.display='none';
+    openModal('support-modal');
+    return;
+  }
+  // مسجل: افتح المحادثة مباشرة
+  document.getElementById('support-guest-form').style.display='none';
+  document.getElementById('support-chat-area').style.display='flex';
+  document.getElementById('support-chat-area').style.flexDirection='column';
+  openModal('support-modal');
+  openUserSupportChat();
+};
+
+async function openUserSupportChat(){
+  if(!currentUser||isAdmin) return;
+  const chatId=currentUser.uid;
+  const ref=doc(db,'support_chats',chatId);
+  const snap=await getDoc(ref);
+  if(!snap.exists()){
+    // جلب بيانات المستخدم المحفوظة تلقائياً
+    const profile = await getDoc(doc(db,'users',chatId));
+    const pdata = profile.exists()?profile.data():{};
+    await setDoc(ref,{
+      userId:chatId,
+      name: currentUser.displayName||pdata.name||'مجهول',
+      phone: pdata.phone||'',
+      lastMsgAt:serverTimestamp(),
+      unreadAdmin:0, unreadUser:0
+    });
+  }
+  const el=document.getElementById('user-chat-messages');
+  el.innerHTML='';
+  if(unsubUserChat) unsubUserChat();
+  unsubUserChat=onSnapshot(
+    query(collection(db,`support_chats/${chatId}/messages`),orderBy('createdAt','asc')),
+    snap2=>{
+      el.innerHTML='';
+      snap2.forEach(d=>{
+        const data=d.data();
+        const div=document.createElement('div');
+        div.className=`msg-bubble ${data.role==='admin'?'msg-admin':'msg-user'}`;
+        div.innerHTML=`${data.text}<div class="msg-time">${data.role==='admin'?'الدعم الفني':'أنت'}</div>`;
+        el.appendChild(div);
+      });
+      el.scrollTop=el.scrollHeight;
+      updateDoc(ref,{unreadUser:0}).catch(()=>{});
+    }
+  );
+}
+window.sendUserMsg=async()=>{
+  if(!currentUser) return;
+  const input=document.getElementById('user-chat-input');
+  const text=input.value.trim();
+  if(!text) return;
+  input.value='';
+  const chatId=currentUser.uid;
+  await addDoc(collection(db,`support_chats/${chatId}/messages`),{
+    text, role:'user', createdAt:serverTimestamp()
+  });
+  await setDoc(doc(db,'support_chats',chatId),{
+    lastMsgAt:serverTimestamp(), unreadAdmin:1
+  },{merge:true});
+};
+
+// ── NOTIF PANEL ──
+window.openNotifPanel=()=>{
+  document.getElementById('notif-overlay').classList.add('open');
+  document.getElementById('notif-panel').classList.add('open');
+};
+window.closeNotifPanel=()=>{
+  document.getElementById('notif-overlay').classList.remove('open');
+  document.getElementById('notif-panel').classList.remove('open');
+};
+window.switchNotifTab=(tab)=>{
+  currentNotifTab=tab;
+  ['orders','support'].forEach(t=>{
+    document.getElementById(`ntab-${t}`).classList.toggle('active',t===tab);
+    document.getElementById(`ntab-${t}-content`).classList.toggle('active',t===tab);
+  });
+};
+
+// ── USER AUTH ──
+window.switchAuthTab=tab=>{
+  document.getElementById('tab-login').classList.toggle('active',tab==='login');
+  document.getElementById('tab-register').classList.toggle('active',tab==='register');
+  document.getElementById('auth-login-form').style.display   = tab==='login'?'block':'none';
+  document.getElementById('auth-register-form').style.display= tab==='register'?'block':'none';
+};
+window.doUserLogin=async()=>{
+  const email=document.getElementById('u-login-email').value.trim();
+  const pass =document.getElementById('u-login-pass').value;
+  if(!email||!pass){ showToast('أدخل البريد وكلمة المرور'); return; }
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+    closeModal('user-auth-modal');
+    showToast('✅ أهلاً بك!');
+  }catch(e){ showToast('❌ بيانات خاطئة'); }
+};
+window.doUserRegister=async()=>{
+  const name  = document.getElementById('u-reg-name').value.trim();
+  const code  = document.getElementById('u-reg-code').value;
+  const phone = document.getElementById('u-reg-phone').value.trim();
+  const email = document.getElementById('u-reg-email').value.trim();
+  const pass  = document.getElementById('u-reg-pass').value;
+  if(!name||!phone||!email||!pass){ showToast('يرجى ملء جميع الحقول'); return; }
+  try{
+    const cred = await createUserWithEmailAndPassword(auth,email,pass);
+    await updateProfile(cred.user,{displayName:name});
+    // save user profile
+    await setDoc(doc(db,'users',cred.user.uid),{
+      name, phone:`${code}${phone}`, email, createdAt:serverTimestamp()
+    });
+    closeModal('user-auth-modal');
+    showToast('✅ تم إنشاء حسابك بنجاح!');
+  }catch(e){
+    if(e.code==='auth/email-already-in-use') showToast('❌ البريد مستخدم من قبل');
+    else if(e.code==='auth/weak-password') showToast('❌ كلمة المرور قصيرة جداً');
+    else showToast('❌ خطأ في الإنشاء');
+  }
+};
+window.handleUserBtn=()=>{
+  if(currentUser && !isAdmin){
+    // show logout option
+    if(confirm('هل تريد تسجيل الخروج؟')) signOut(auth).then(()=>showToast('تم تسجيل الخروج'));
+  } else if(!currentUser){
+    openModal('user-auth-modal');
+  }
+};
+
+// ── ADMIN AUTH ──
+window.handleAdminBtn=()=>{ if(isAdmin) openModal('profile-modal'); };
+window.handleAdminBtnLogin=()=>{ openEl('admin-login-overlay'); };
+window.doAdminLogin=async()=>{
+  const email=document.getElementById('login-email').value.trim();
+  const pass =document.getElementById('login-pass').value;
+  if(!email||!pass){ showToast('أدخل البريد وكلمة المرور'); return; }
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+    closeEl('admin-login-overlay');
+    showToast('✅ مرحباً بك مسؤول المتجر');
+  }catch(e){ showToast('❌ بيانات خاطئة'); }
+};
+window.doAdminLogout=async()=>{
+  await signOut(auth);
+  closeModal('profile-modal');
+  showToast('تم تسجيل الخروج');
+};
+
+// ── HELPERS ──
+window.openModal  = id=>document.getElementById(id).classList.add('open');
+window.closeModal = id=>document.getElementById(id).classList.remove('open');
+window.openEl     = id=>document.getElementById(id).classList.add('open');
+window.closeEl    = id=>document.getElementById(id).classList.remove('open');
+
+window.previewUrl=(url,prevId)=>{
+  const img=document.getElementById(prevId);
+  if(url&&url.startsWith('http')){ img.src=url; img.style.display='block'; img.onerror=()=>img.style.display='none'; }
+  else img.style.display='none';
+};
+
+window.showToast=msg=>{
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+};
+
+// secret admin login: long press logo
+let logoTimer;
+document.getElementById('store-name-nav').addEventListener('pointerdown',()=>{
+  logoTimer=setTimeout(()=>{ if(!isAdmin) openEl('admin-login-overlay'); },2000);
+});
+document.getElementById('store-name-nav').addEventListener('pointerup',()=>clearTimeout(logoTimer));
+</script>
+</body>
+</html>
